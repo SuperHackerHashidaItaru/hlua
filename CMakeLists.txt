@@ -225,6 +225,13 @@ if(BUILD_SERVER)
 	add_subdirectory(dlls)
 endif()
 
+option(BUILD_TESTS "Build the headless hlua test" OFF)
+
+if(BUILD_TESTS AND BUILD_SERVER AND UNIX AND NOT ANDROID)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
+
 if(NOT BUILD_SERVER AND NOT BUILD_CLIENT)
 	message(FATAL_ERROR "Nothing to build")
 endif()
