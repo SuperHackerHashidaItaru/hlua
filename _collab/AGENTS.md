@@ -62,8 +62,8 @@ happen together, in steps small enough to type.
     hlua/            runtime sources (core, hooks, entity bridge)
     external/lua54/  vendored lua 5.4.9
     tests/           headless test, tests/mod is the scripted test mod
-    _collab/         this guide, design.md, roadmap.md, discussions,
-                     worklog, proposal-v1.md (historical)
+    _collab/         this guide, apply-plan.md, design.md, roadmap.md,
+                     discussions, worklog, proposal-v1.md (historical)
 
 ## Build and test quick reference
 

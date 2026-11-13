@@ -76,8 +76,8 @@ sdk beyond the standard dlls headers:
 Sdk integration is deliberately thin: one member and one virtual on
 CBaseEntity, call sites in client.cpp, cbase.cpp, game.cpp, the
 LINK_ENTITY_TO_CLASS macro, and GetNewDLLFunctions for
-OnFreeEntPrivateData and GameShutdown. Total sdk diff about 110
-lines.
+OnFreeEntPrivateData and GameShutdown. Total sdk diff is 113 insertions
+and 10 deletions across ten files.
 
 Entity values are edict indexes wrapped in userdata with validity
 checks, not C++ pointers, so a stale lua reference errors cleanly
