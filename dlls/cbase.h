@@ -153,6 +153,9 @@ public:
 	CBaseEntity *m_pGoalEnt;// path corner we are heading towards
 	CBaseEntity *m_pLink;// used for temporary link-list operations. 
 
+	// hlua: lua registry ref of the per entity script table, 0 = none
+	int hluaTable;
+
 	// initialization functions
 	virtual void Spawn( void ) { return; }
 	virtual void Precache( void ) { return; }
@@ -161,6 +164,7 @@ public:
 	virtual int Restore( CRestore &restore );
 	virtual int ObjectCaps( void ) { return FCAP_ACROSS_TRANSITION; }
 	virtual void Activate( void ) {}
+	virtual const char *ScriptClass( void ) { return NULL; } // hlua
 
 	// Setup the object->object collision box (pev->mins / pev->maxs is the object->world collision box)
 	virtual void SetObjectCollisionBox( void );

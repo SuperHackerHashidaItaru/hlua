@@ -146,6 +146,9 @@ set (SVDLL_SOURCES
 	xen.cpp
 	zombie.cpp
 	../game_shared/voice_gamemgr.cpp
+	../hlua/core.cpp
+	../hlua/hooks.cpp
+	../hlua/entity.cpp
 	../pm_shared/pm_debug.c
 	../pm_shared/pm_math.c
 	../pm_shared/pm_shared.c
@@ -166,7 +169,7 @@ else()
 		../external/openbsd/strlcat.c)
 endif()
 
-include_directories (. wpn_shared ../common ../engine ../pm_shared ../game_shared ../public)
+include_directories (. wpn_shared ../common ../engine ../pm_shared ../game_shared ../public ../hlua ../external/lua54)
 
 if(MSVC)
 	set(SVDLL_SOURCES
@@ -175,7 +178,7 @@ if(MSVC)
 endif()
 
 add_library (${SVDLL_LIBRARY} SHARED ${SVDLL_SOURCES})
-target_link_libraries(${SVDLL_LIBRARY} vcs_info)
+target_link_libraries(${SVDLL_LIBRARY} vcs_info lua54)
 
 set_target_properties (${SVDLL_LIBRARY} PROPERTIES POSITION_INDEPENDENT_CODE 1)
 

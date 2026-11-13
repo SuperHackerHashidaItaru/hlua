@@ -184,6 +184,9 @@ int DispatchSpawn( edict_t *pent )
 
 	}
 
+	if( pEntity )
+		hlua::OnSpawn( pent );
+
 	return 0;
 }
 
@@ -776,3 +779,37 @@ CBaseEntity *CBaseEntity::Create( const char *szName, const Vector &vecOrigin, c
 	DispatchSpawn( pEntity->edict() );
 	return pEntity;
 }
+
+static void GameDLLShutdown( void )
+{
+	hlua::Shutdown();
+}
+
+static NEW_DLL_FUNCTIONS gNewFunctionTable =
+{
+	hlua::OnFreePrivateData, // pfnOnFreeEntPrivateData
+	GameDLLShutdown,         // pfnGameShutdown
+	NULL,                    // pfnShouldCollide
+	NULL,                    // pfnCvarValue
+	NULL                     // pfnCvarValue2
+};
+
+#if !XASH_WIN32
+extern "C" {
+#endif
+int DLLEXPORT GetNewDLLFunctions( NEW_DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion )
+{
+	if( !pFunctionTable || !interfaceVersion || *interfaceVersion != NEW_DLL_FUNCTIONS_VERSION )
+	{
+		if( interfaceVersion )
+			*interfaceVersion = NEW_DLL_FUNCTIONS_VERSION;
+		return FALSE;
+	}
+
+	memcpy( pFunctionTable, &gNewFunctionTable, sizeof( NEW_DLL_FUNCTIONS ) );
+	return TRUE;
+}
+#if !XASH_WIN32
+}
+#endif
+

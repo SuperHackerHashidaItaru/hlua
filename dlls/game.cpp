@@ -892,5 +892,7 @@ void GameDLLInit( void )
 	CVAR_REGISTER( &sv_pushable_fixed_tick_fudge );
 
 	SERVER_COMMAND( "exec skill.cfg\n" );
+
+	hlua::OnGameInit();
 }
 

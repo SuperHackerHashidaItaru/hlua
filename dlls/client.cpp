@@ -82,6 +82,9 @@ called when a player connects to a server
 */
 BOOL ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128] )
 {
+	if( hlua::OnClientConnect( pszName, pszAddress, szRejectReason, 128 ) )
+		return FALSE;
+
 	return g_pGameRules->ClientConnected( pEntity, pszName, pszAddress, szRejectReason );
 
 // a client connecting during an intermission can cause problems
@@ -100,6 +103,8 @@ GLOBALS ASSUMED SET:  g_fGameOver
 */
 void ClientDisconnect( edict_t *pEntity )
 {
+	hlua::OnClientDisconnect( pEntity );
+
 	if( g_fGameOver )
 		return;
 
@@ -204,6 +209,8 @@ void ClientPutInServer( edict_t *pEntity )
 
 	pPlayer->pev->iuser1 = 0;
 	pPlayer->pev->iuser2 = 0;
+
+	hlua::OnClientPutInServer( pEntity );
 }
 
 #include "voice_gamemgr.h"
@@ -369,6 +376,11 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	if( !p || !p[0] || !Q_UnicodeValidate ( p ) )
 		return;  // no character found, so say nothing
 
+	strlcpy( szTemp, p, sizeof( szTemp ) );
+	if( hlua::OnSay( pEntity, szTemp, sizeof( szTemp ), teamonly ) )
+		return;
+	p = szTemp;
+
 	// turn on color set 2  (color on,  no sound)
 	if( player->IsObserver() && ( teamonly ) )
 		safe_snprintf( text, sizeof( text ), "%c(SPEC) %s: ", 2, STRING( pEntity->v.netname ) );
@@ -473,6 +485,9 @@ void ClientCommand( edict_t *pEntity )
 
 	// Is the client spawned yet?
 	if( !pEntity->pvPrivateData )
+		return;
+
+	if( hlua::OnClientCommand( pEntity ) )
 		return;
 
 	entvars_t *pev = &pEntity->v;
@@ -714,6 +729,8 @@ void ServerDeactivate( void )
 
 	g_serveractive = 0;
 
+	hlua::OnServerDeactivate();
+
 	// Peform any shutdown operations here...
 	//
 }
@@ -752,6 +769,8 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 
 	// Link user messages here to make sure first client can get them...
 	LinkUserMessages();
+
+	hlua::OnServerActivate();
 }
 
 /*
@@ -764,6 +783,8 @@ Called every frame before physics are run
 void PlayerPreThink( edict_t *pEntity )
 {
 	//ALERT( at_console, "PreThink( %g, frametime %g )\n", gpGlobals->time, gpGlobals->frametime );
+
+	hlua::OnPlayerPreThink( pEntity );
 
 	CBasePlayer *pPlayer = (CBasePlayer *)GET_PRIVATE( pEntity );
 
@@ -786,6 +807,8 @@ void PlayerPostThink( edict_t *pEntity )
 
 	if( pPlayer )
 		pPlayer->PostThink();
+
+	hlua::OnPlayerPostThink( pEntity );
 }
 
 void ParmsNewLevel( void )
@@ -807,6 +830,8 @@ void ParmsChangeLevel( void )
 void StartFrame( void )
 {
 	//ALERT( at_console, "SV_Physics( %g, frametime %g )\n", gpGlobals->time, gpGlobals->frametime );
+
+	hlua::Frame();
 
 	if( g_pGameRules )
 		g_pGameRules->Think();

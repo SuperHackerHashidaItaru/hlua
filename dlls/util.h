@@ -100,6 +100,27 @@ typedef int BOOL;
 #define DECLARE_GLOBAL_METHOD(MethodName)  extern void DLLEXPORT MethodName( void )
 #define GLOBAL_METHOD(funcname)					void DLLEXPORT funcname(void)
 
+// hlua script runtime, implemented in hlua/
+namespace hlua
+{
+	void OnGameInit( void );
+	void Shutdown( void );
+	void Refresh( void );
+	void Frame( void );
+	void OnServerActivate( void );
+	void OnServerDeactivate( void );
+	bool OnClientConnect( const char *name, const char *address, char *reject, int rejectlen );
+	void OnClientDisconnect( edict_t *pent );
+	void OnClientPutInServer( edict_t *pent );
+	bool OnClientCommand( edict_t *pent );
+	bool OnSay( edict_t *pent, char *text, int textlen, int teamonly );
+	void OnPlayerPreThink( edict_t *pent );
+	void OnPlayerPostThink( edict_t *pent );
+	void OnSpawn( edict_t *pent );
+	void OnFreePrivateData( edict_t *pent );
+	bool TrySpawnScripted( const char *mapClassName, entvars_t *pev );
+}
+
 // This is the glue that hooks .MAP entity class names to our CPP classes
 // The _declspec forces them to be exported by name so we can do a lookup with GetProcAddress()
 // The function is used to intialize / allocate the object for the entity
@@ -107,7 +128,7 @@ typedef int BOOL;
 #if CLIENT_DLL
 #define LINK_ENTITY_TO_CLASS(mapClassName,DLLClassName)
 #else // CLIENT_DLL
-#define LINK_ENTITY_TO_CLASS(mapClassName,DLLClassName) extern "C" EXPORT void mapClassName( entvars_t *pev ); void mapClassName( entvars_t *pev ) { GetClassPtr( (DLLClassName *)pev ); }
+#define LINK_ENTITY_TO_CLASS(mapClassName,DLLClassName) extern "C" EXPORT void mapClassName( entvars_t *pev ); void mapClassName( entvars_t *pev ) { if( hlua::TrySpawnScripted( #mapClassName, pev ) ) return; GetClassPtr( (DLLClassName *)pev ); }
 #endif // CLIENT_DLL
 
 //
