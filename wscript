@@ -63,7 +63,7 @@ def options(opt):
 	grp.add_option('--enable-msvcdeps', action='store_true', dest='MSVCDEPS', default=False, help='')
 	grp.add_option('--enable-wafcache', action='store_true', dest='WAFCACHE', default=False, help='')
 
-	opt.add_subproject('cl_dll dlls')
+	opt.add_subproject('cl_dll dlls external/lua54')
 
 def configure(conf):
 	conf.env.EXPORT_DEFINES_LIST = []
@@ -301,7 +301,7 @@ def configure(conf):
 	if conf.env.DEST_OS == 'ps4':
 		conf.add_subproject('external/ps4compat')
 
-	conf.add_subproject('game_shared dlls freevgui cl_dll')
+	conf.add_subproject('game_shared external/lua54 dlls freevgui cl_dll')
 
 def build(bld):
 	if bld.env.WAFCACHE:
@@ -318,4 +318,4 @@ def build(bld):
 	if bld.env.DEST_OS == 'ps4':
 		bld.add_subproject('external/ps4compat')
 
-	bld.add_subproject('game_shared dlls freevgui cl_dll')
+	bld.add_subproject('game_shared external/lua54 dlls freevgui cl_dll')

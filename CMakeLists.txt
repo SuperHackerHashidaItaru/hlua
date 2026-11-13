@@ -211,6 +211,7 @@ if(HAVE_TGMATH_H)
 endif()
 
 add_subdirectory(game_shared)
+add_subdirectory(external/lua54)
 
 if(BUILD_CLIENT)
 	message(STATUS "Building client enabled")
