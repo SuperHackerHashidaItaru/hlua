@@ -6,7 +6,11 @@ is for. Commands are examples: type everything your own way.
 ## what exists right now
 
 QaisAlsaid/hlua (your repo) sits at 89e83b9, the upstream sdk tip.
-Collab main is exactly your tip plus five commits:
+Collab main is your tip plus a short series. Apply the code commits,
+skip every commit that only touches _collab/ (their subjects start
+with "collab:"):
+
+code, apply these:
 
 - 1eb72b5  external: vendor lua 5.4.9 as static library
   65 files. The lua sources under external/lua54, three subproject
@@ -18,8 +22,11 @@ Collab main is exactly your tip plus five commits:
   tests/hlua_test.cpp loads the built server library through a fake
   engine and drives it, tests/mod is the scripted test content
 - 07336e9  readme: describe the project
-- 4e2a3dc  collab: design docs, worklog and agent guide
-  _collab/ only, never lands in your repo
+- cc05a34  hlua: use space indent in hooks.cpp
+
+collab only, skip these:
+
+- 4e2a3dc, 019cb32, 8f69410, 610c1d6 and any later "collab:" commit
 
 Shas move whenever history is rebuilt. Identify commits by subject.
 
@@ -69,12 +76,11 @@ Option A, cherry-pick (fastest):
     cd hlua
     git remote add collab https://github.com/SuperHackerHashidaItaru/hlua.git
     git fetch collab
-    git cherry-pick 1eb72b5 5cc1f5a 49b4778 07336e9
+    git cherry-pick 1eb72b5 5cc1f5a 49b4778 07336e9 cc05a34
     git push
 
-Leave out 4e2a3dc: _collab/ stays out of your repo. If a cherry-pick
-conflicts, your fork moved past 89e83b9: say so and the series gets
-rebased for you.
+Skip the _collab/ commits. If a cherry-pick conflicts, your fork moved
+past 89e83b9: say so and the series gets rebased for you.
 
 Option B, type it yourself (the point of this project):
 
